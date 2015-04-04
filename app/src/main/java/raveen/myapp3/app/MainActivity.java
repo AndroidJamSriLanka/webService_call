@@ -23,8 +23,7 @@ public class MainActivity extends ActionBarActivity implements AsyncResponse{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final WebService webService = new WebService(MainActivity.this,"get","Please wait");
-        webService.asyncResponse=this;
+
         Button btn = (Button)findViewById(R.id.button);
 
 
@@ -32,12 +31,7 @@ public class MainActivity extends ActionBarActivity implements AsyncResponse{
             @Override
             public void onClick(View v) {
 
-                webService.execute("http://www.json-generator.com/api/json/get/bSlsSCVKeW?indent=2");
-
-                //JSONArray ja = new JSONArray(response);
-                //JSONObject jo = new JSONObject(ja.getString(0));
-                //String name= jo.getString("name");
-
+                getResponse();
 
             }
         });
@@ -72,5 +66,12 @@ public class MainActivity extends ActionBarActivity implements AsyncResponse{
     public void processFinish(String response) {
         TextView textView = (TextView)findViewById(R.id.response);
         textView.setText(response);
+    }
+
+    public void getResponse(){
+        final WebService webService = new WebService(MainActivity.this,"get","Please wait");
+        webService.asyncResponse=this;
+        webService.execute("http://www.json-generator.com/api/json/get/bSlsSCVKeW?indent=2");
+
     }
 }
