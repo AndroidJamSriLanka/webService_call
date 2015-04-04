@@ -1,5 +1,4 @@
 package raveen.myapp3.app;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -11,9 +10,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,18 +18,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-class WebService  extends AsyncTask<String, Void, String> {
+class WebService  extends AsyncTask<String,String,String> {
 
     static InputStream is = null;
     private String Content;
     private String Error = null;
     private String request_type;
+    public AsyncResponse asyncResponse;
+    private Context context;
+    private ProgressDialog progressDialog;
+    private String message;
 
-    public WebService(String type)
+    public WebService(Context ctx,String type,String m)
     {
         request_type = type;
+        context = ctx;
+        progressDialog =new ProgressDialog(context);
+        message = m;
     }
 
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        progressDialog.setMessage(message);
+        progressDialog.show();
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -113,5 +123,14 @@ class WebService  extends AsyncTask<String, Void, String> {
         return Content;
     }
 
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+
+        asyncResponse.processFinish(s);
+        if(progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
 }
 

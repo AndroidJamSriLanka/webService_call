@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements AsyncResponse{
 
 
 
@@ -23,27 +23,21 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final WebService webService = new WebService(MainActivity.this,"get","Please wait");
+        webService.asyncResponse=this;
         Button btn = (Button)findViewById(R.id.button);
-        final TextView textView = (TextView)findViewById(R.id.response);
+
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                WebService webService = new WebService("get");
-                try {
-                    String response = webService.execute("http://www.json-generator.com/api/json/get/bSlsSCVKeW?indent=2").get();
+                webService.execute("http://www.json-generator.com/api/json/get/bSlsSCVKeW?indent=2");
 
-                    //JSONArray ja = new JSONArray(response);
-                    //JSONObject jo = new JSONObject(ja.getString(0));
-                    //String name= jo.getString("name");
-                    textView.setText(response);
+                //JSONArray ja = new JSONArray(response);
+                //JSONObject jo = new JSONObject(ja.getString(0));
+                //String name= jo.getString("name");
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
 
             }
         });
@@ -72,5 +66,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void processFinish(String response) {
+        TextView textView = (TextView)findViewById(R.id.response);
+        textView.setText(response);
     }
 }
